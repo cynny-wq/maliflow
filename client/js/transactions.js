@@ -1,22 +1,82 @@
-const express = require("express");
+const token = localStorage.getItem("token");
 
-const router = express.Router();
+if (!token) {
+    alert("Please login first.");
+    window.location.href = "login.html";
+}
 
-const auth = require("../middleware/auth");
+async function loadTransactions() {
 
+    try {
 
-const {
-    createTransaction,
-    getTransactions
-} = require("../controllers/transactionController");
+        const response = await fetch(
+            "http://localhost:5000/api/transactions",
+            {
+                headers: {
+                    "Authorization": token
+                }
+            }
+        );
 
+        const transactions = await response.json();
 
-// Get all transactions
-router.get("/", auth, getTransactions);
+        if (!response.ok) {
+            alert(transactions.message || "Unable to load transactions.");
+            return;
+        }
 
+        const transactionList =
+            document.getElementById("transactionList");
 
-// Create transaction
-router.post("/", auth, createTransaction);
+        transactionList.innerHTML = "";
 
+        if (transactions.length === 0) {
 
-module.exports = router;
+            transactionList.innerHTML =
+                "<p>No transactions yet.</p>";
+
+            return;
+        }
+
+        transactions.forEach(transaction => {
+
+            const item = document.createElement("div");
+
+            item.className = "transaction-item";
+
+            const sign =
+                transaction.type === "income" ? "+" : "-";
+
+            const amount =
+                Number(transaction.amount).toLocaleString();
+
+            const className =
+                transaction.type === "income"
+                    ? "positive"
+                    : "negative";
+
+            item.innerHTML = `
+                <div>
+                    <strong>${transaction.category}</strong>
+                    <p>${transaction.name || "No name"}</p>
+                </div>
+
+                <span class="${className}">
+                    ${sign} KSh ${amount}
+                </span>
+            `;
+
+            transactionList.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to load transactions.");
+
+    }
+}
+
+loadTransactions();
