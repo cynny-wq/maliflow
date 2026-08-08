@@ -1,111 +1,191 @@
-const customerForm = document.getElementById("customerForm");
+// ===============================
+// MaliFlow Customers
+// ===============================
+
+const customerForm =
+    document.getElementById("customerForm");
+
+const token =
+    localStorage.getItem("token");
 
 
-// Load customers from database
+// ===============================
+// Check Login
+// ===============================
+
+if (!token) {
+
+    alert("Please login first.");
+
+    window.location.href = "login.html";
+
+}
+
+
+// ===============================
+// Load Customers
+// ===============================
 
 async function loadCustomers() {
 
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/customers"
+            "http://localhost:5000/api/customers",
+            {
+                headers: {
+                    "Authorization": token
+                }
+            }
         );
 
-        const customers = await response.json();
+        const data = await response.json();
 
-        displayCustomers(customers);
+        console.log("Customers response:", data);
 
+        if (!response.ok) {
 
-    } catch(error) {
+            console.error(
+                "Customer API error:",
+                data
+            );
 
-        console.error(error);
-        alert("Unable to load customers.");
+            alert(
+                data.message ||
+                "Unable to load customers."
+            );
+
+            return;
+        }
+
+        displayCustomers(data);
+
+    } catch (error) {
+
+        console.error(
+            "Customer loading error:",
+            error
+        );
+
+        alert(
+            "Unable to connect to the server."
+        );
 
     }
 
 }
 
 
+// ===============================
+// Add Customer
+// ===============================
 
-// Add customer
+customerForm.addEventListener(
+    "submit",
+    async function(event) {
 
-customerForm.addEventListener("submit", async function(event){
-
-    event.preventDefault();
-
-
-    const customer = {
-
-        name: document.getElementById("customerName").value,
-
-        amount_owed: Number(
-            document.getElementById("amountOwed").value
-        )
-
-    };
+        event.preventDefault();
 
 
-    try {
+        const customer = {
+
+            name:
+                document.getElementById(
+                    "customerName"
+                ).value,
+
+            amount_owed:
+                Number(
+                    document.getElementById(
+                        "amountOwed"
+                    ).value
+                )
+
+        };
 
 
-        const response = await fetch(
-            "http://localhost:5000/api/customers",
-            {
-                method:"POST",
+        try {
 
-                headers:{
-                    "Content-Type":"application/json"
-                },
+            const response = await fetch(
+                "http://localhost:5000/api/customers",
+                {
+                    method: "POST",
 
-                body: JSON.stringify(customer)
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            token
+                    },
+
+                    body:
+                        JSON.stringify(customer)
+                }
+            );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                alert(
+                    data.message ||
+                    "Failed to add customer."
+                );
+
+                return;
+
             }
-        );
 
 
-        const data = await response.json();
+            if (data.success) {
 
+                alert(
+                    "Customer added successfully!"
+                );
 
-        if(data.success){
+                customerForm.reset();
 
-            alert("Customer added ✅");
+                loadCustomers();
 
-            customerForm.reset();
+            }
 
-            loadCustomers();
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to connect to the server."
+            );
 
         }
 
-
-    } catch(error){
-
-        console.error(error);
-
-        alert("Failed to save customer.");
-
     }
+);
 
 
-});
+// ===============================
+// Display Customers
+// ===============================
 
-
-
-
-// Display customers
-
-function displayCustomers(customers){
-
+function displayCustomers(customers) {
 
     const customerList =
-        document.getElementById("customerList");
+        document.getElementById(
+            "customerList"
+        );
 
 
     customerList.innerHTML = "";
 
 
-    if(customers.length === 0){
+    if (customers.length === 0) {
 
         customerList.innerHTML = `
-            <p>No customers yet</p>
+            <p>No customers yet.</p>
         `;
 
         return;
@@ -113,69 +193,132 @@ function displayCustomers(customers){
     }
 
 
-
     customers.forEach(customer => {
 
-
-        const item = document.createElement("div");
-
-
-        item.classList.add("customer-item");
+        const item =
+            document.createElement("div");
 
 
-    
+        item.className =
+            "customer-item";
 
-            item.innerHTML = `
-    <div>
 
-        <strong>${customer.name}</strong>
+        item.innerHTML = `
 
-        <p>
-            Remaining:
-            KSh ${Number(customer.amount_owed).toLocaleString()}
-        </p>
+            <strong>
+                ${customer.name}
+            </strong>
 
-        <p>
-            Paid:
-            KSh ${Number(customer.amount_paid || 0).toLocaleString()}
-        </p>
+            <p>
+                Remaining:
+                KSh ${Number(
+                    customer.amount_owed || 0
+                ).toLocaleString()}
+            </p>
 
-    </div>
+            <p>
+                Paid:
+                KSh ${Number(
+                    customer.amount_paid || 0
+                ).toLocaleString()}
+            </p>
 
-    <button
-        class="receive-payment"
-        onclick="receivePayment(${customer.id})">
+            <button
+                class="receive-payment"
+                onclick="receivePayment(${customer.id})">
 
-        Receive Payment
+                Receive Payment
 
-    </button>
-`;
+            </button>
 
-    
+        `;
+
 
         customerList.appendChild(item);
 
-
     });
 
-
 }
+
+
+// ===============================
+// Receive Payment
+// ===============================
+
 async function receivePayment(id) {
 
-    const amount = prompt("Enter payment amount:");
+    const amount =
+        prompt(
+            "Enter payment amount:"
+        );
+
 
     if (!amount) {
         return;
     }
 
-    alert(
-        `Customer ID: ${id}\nPayment: KSh ${amount}`
-    );
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:5000/api/customers/${id}/payment`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    "Authorization":
+                        token
+                },
+
+                body: JSON.stringify({
+                    amount: Number(amount)
+                })
+            }
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message ||
+                "Payment failed."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Payment received successfully!"
+        );
+
+
+        loadCustomers();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to the server."
+        );
+
+    }
 
 }
 
 
-
-// Start page
+// ===============================
+// Start
+// ===============================
 
 loadCustomers();

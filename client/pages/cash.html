@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MaliFlow | Cash</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/pages/cash.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="cash-container">
+
+        <!-- Header -->
+
+        <header class="page-header">
+
+            <h1>Cash</h1>
+
+            <p>
+                Record money coming in and going out
+            </p>
+
+        </header>
+
+
+        <!-- Money In / Money Out -->
+
+        <div class="transaction-toggle">
+
+            <button
+                type="button"
+                id="moneyIn"
+                class="toggle-btn active"
+            >
+                Money In
+            </button>
+
+            <button
+                type="button"
+                id="moneyOut"
+                class="toggle-btn"
+            >
+                Money Out
+            </button>
+
+        </div>
+
+
+        <!-- Cash Form -->
+
+        <section class="cash-card">
+
+            <form id="cashForm">
+
+
+                <div class="form-group">
+
+                    <label for="amount">
+                        Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="Enter amount"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <input
+                        type="text"
+                        id="category"
+                        placeholder="e.g. Sales, Transport"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Optional"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="notes">
+                        Notes
+                    </label>
+
+                    <textarea
+                        id="notes"
+                        placeholder="Add a note..."
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Save Transaction
+                </button>
+
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <!-- Bottom Navigation -->
+
+    <nav class="bottom-nav">
+
+        <a href="dashboard.html">
+            🏠
+            <br>
+            Home
+        </a>
+
+        <a href="cash.html">
+            💰
+            <br>
+            Cash
+        </a>
+
+        <a href="customers.html">
+            👥
+            <br>
+            Customers
+        </a>
+
+        <a href="profile.html">
+            ⚙️
+            <br>
+            Profile
+        </a>
+
+    </nav>
+
+
+    <script src="../js/cash.js"></script>
+
+</body>
+
+</html>

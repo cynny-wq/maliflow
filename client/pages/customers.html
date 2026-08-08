@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MaliFlow | Customers</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/pages/customers.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="customers-container">
+
+
+        <!-- Header -->
+
+        <header class="page-header">
+
+            <h1>
+                Customers
+            </h1>
+
+            <p>
+                Manage your customer debts
+            </p>
+
+        </header>
+
+
+        <!-- Add Customer -->
+
+        <section class="customer-card">
+
+            <h2>
+                Add Customer
+            </h2>
+
+
+            <form id="customerForm">
+
+                <div class="form-group">
+
+                    <label for="customerName">
+                        Customer Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customerName"
+                        placeholder="Enter customer name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="amountOwed">
+                        Amount Owed
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amountOwed"
+                        placeholder="Enter amount"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="action-btn income-btn"
+                >
+
+                    Add Customer
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- Customer List -->
+
+        <section class="customer-card">
+
+            <h2>
+                Your Customers
+            </h2>
+
+
+            <div id="customerList">
+
+                <p>
+                    Loading customers...
+                </p>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- Bottom Navigation -->
+
+    <nav class="bottom-nav">
+
+        <a href="dashboard.html">
+            🏠
+            <br>
+            Home
+        </a>
+
+        <a href="cash.html">
+            💰
+            <br>
+            Cash
+        </a>
+
+        <a href="customers.html">
+            👥
+            <br>
+            Customers
+        </a>
+
+        <a href="profile.html">
+            ⚙️
+            <br>
+            Profile
+        </a>
+
+    </nav>
+
+
+    <script src="../js/customers.js"></script>
+
+</body>
+
+</html>
