@@ -1,0 +1,67 @@
+.customers-container{
+
+    padding:24px;
+
+}
+
+
+
+.page-header{
+
+    margin-bottom:24px;
+
+}
+
+
+.page-header h1{
+
+    color:var(--primary);
+
+}
+
+
+.page-header p{
+
+    color:var(--text-light);
+
+}
+
+
+
+.customer-card{
+
+    background:var(--surface);
+
+    padding:24px;
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+
+
+.customer-item{
+
+    background:var(--surface);
+
+    padding:16px;
+
+    margin-top:12px;
+
+    border-radius:14px;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+
+
+.customer-item p{
+
+    color:var(--danger);
+
+    margin-top:5px;
+
+}

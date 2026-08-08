@@ -1,0 +1,43 @@
+.transactions-container{
+
+    display:flex;
+    justify-content:center;
+    padding:40px;
+
+}
+
+
+.transactions-card{
+
+    width:90%;
+    max-width:700px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+
+}
+
+
+.transaction-item{
+
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    margin-top:10px;
+    border-bottom:1px solid #ddd;
+
+}
+
+
+.positive{
+
+    color:green;
+
+}
+
+
+.negative{
+
+    color:red;
+
+}
