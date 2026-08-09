@@ -2,176 +2,199 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>MaliFlow | Dashboard</title>
 
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/pages/dashboard.css">
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/pages/dashboard.css"
+    >
+
 </head>
 
 <body>
 
-    <main class="dashboard-container">
+<main class="dashboard-container">
 
-        <!-- Header -->
-        <header class="dashboard-header">
+    <!-- Header -->
 
-            <div>
-                <h1>MaliFlow</h1>
-                <p id="businessTitle">My Business</p>
-            </div>
+    <header class="dashboard-header">
 
-            <div class="notification">
-                🔔
-            </div>
+        <div>
 
-        </header>
+            <h1>MaliFlow</h1>
 
-
-        <!-- Welcome -->
-        <section class="welcome">
-
-            <h2 id="greeting">
-                Good Morning 👋
-            </h2>
-
-            <p>
-                Here's what's happening with your money.
+            <p id="businessTitle">
+                My Business
             </p>
 
-        </section>
+        </div>
+
+        <div class="notification">
+            🔔
+        </div>
+
+    </header>
 
 
-        <!-- Quick Actions -->
-        <section class="quick-actions">
+    <!-- Welcome -->
 
-            <button
-                class="action-btn income-btn"
-                onclick="window.location.href='cash.html'">
+    <section class="welcome">
 
-                + Money In
+        <h2 id="greeting">
+            Good Morning 👋
+        </h2>
 
-            </button>
+        <p>
+            Here's what's happening with your money.
+        </p>
 
-            <button
-                class="action-btn expense-btn"
-                onclick="window.location.href='cash.html'">
-
-                - Money Out
-
-            </button>
-
-        </section>
+    </section>
 
 
-        <!-- Statistics -->
-        <section class="stats">
+    <!-- Quick Actions -->
 
-            <div class="stat-card income">
+    <section class="quick-actions">
 
-                <p>Cash In</p>
-
-                <h2 id="cashIn">
-                    KSh 0
-                </h2>
-
-            </div>
+        <button
+            class="action-btn income-btn"
+            onclick="window.location.href='cash.html'"
+        >
+            + Money In
+        </button>
 
 
-            <div class="stat-card expense">
+        <button
+            class="action-btn expense-btn"
+            onclick="window.location.href='cash.html'"
+        >
+            - Money Out
+        </button>
 
-                <p>Cash Out</p>
-
-                <h2 id="cashOut">
-                    KSh 0
-                </h2>
-
-            </div>
-
-
-            <div class="stat-card balance">
-
-                <p>Balance</p>
-
-                <h2 id="balance">
-                    KSh 0
-                </h2>
-
-            </div>
+    </section>
 
 
-            <div class="stat-card debt">
+    <!-- Statistics -->
 
-                <p>Customer Debt</p>
+    <section class="stats">
 
-                <h2 id="customerDebt">
-                    KSh 0
-                </h2>
+        <div class="stat-card income">
 
-            </div>
+            <p>Cash In</p>
 
-        </section>
-
-
-        <!-- Transactions -->
-        <section class="transactions">
-
-            <h2>
-                Recent Transactions
+            <h2 id="cashIn">
+                KSh 0
             </h2>
 
-            <div id="transactionList">
-
-                <p class="empty">
-                    Loading transactions...
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
+        </div>
 
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
+        <div class="stat-card expense">
 
-        <a href="dashboard.html">
-            🏠
-            <br>
-            Home
-        </a>
+            <p>Cash Out</p>
 
-        <a href="cash.html">
-            💰
-            <br>
-            Cash
-        </a>
+            <h2 id="cashOut">
+                KSh 0
+            </h2>
 
-        <a href="customers.html">
-            👥
-            <br>
-            Customers
-        </a>
-
-        <a href="profile.html">
-            ⚙️
-            <br>
-            Profile
-        </a>
-
-        <a href="transactions.html">
-            📊
-            <br>
-            Transactions
-        </a>
-
-    </nav>
+        </div>
 
 
-    <script src="../js/dashboard.js"></script>
+        <div class="stat-card balance">
+
+            <p>Balance</p>
+
+            <h2 id="balance">
+                KSh 0
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card debt">
+
+            <p>Customer Debt</p>
+
+            <h2 id="customerDebt">
+                KSh 0
+            </h2>
+
+        </div>
+
+    </section>
+
+
+    <!-- Recent Transactions -->
+
+    <section class="transactions">
+
+        <h2>
+            Recent Transactions
+        </h2>
+
+        <div id="transactionList">
+
+            <p class="empty">
+                Loading transactions...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- Bottom Navigation -->
+
+<nav class="bottom-nav">
+
+    <a href="dashboard.html">
+        🏠
+        <br>
+        Home
+    </a>
+
+    <a href="cash.html">
+        💰
+        <br>
+        Cash
+    </a>
+
+    <a href="customers.html">
+        👥
+        <br>
+        Customers
+    </a>
+
+    <a href="profile.html">
+        ⚙️
+        <br>
+        Profile
+    </a>
+
+    <a href="transactions.html">
+        📊
+        <br>
+        Transactions
+    </a>
+
+</nav>
+
+
+<script src="../js/dashboard.js"></script>
 
 </body>
 
