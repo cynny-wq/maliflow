@@ -13,10 +13,22 @@ const customerForm =
 async function loadCustomers() {
 
     try {
+        const token = localStorage.getItem("token");
 
-        const response = await fetch(
-            "/api/customers"
-        );
+if (!token) {
+    alert("Please login first.");
+    return;
+}
+
+const response = await fetch(
+    "/api/customers",
+    {
+        headers: {
+            "Authorization": token
+        }
+    }
+);
+
 
         const customers =
             await response.json();

@@ -11,11 +11,8 @@ const {
     getPaymentHistory
 } = require("../controllers/customerController");
 // Get customers
-router.get("/", getCustomers);
-
-
-// Add customer
-router.post("/", createCustomer);
+router.get("/", auth, getCustomers);
+router.post("/", auth, createCustomer);
 
 router.put("/:id/payment", auth, receivePayment);
 // Get customer payment history

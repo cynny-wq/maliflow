@@ -1,65 +1,96 @@
 const db = require("../database/database");
 
+// ===============================
+// Create Customer
+// ===============================
 
-// Create customer
 const createCustomer = (req, res) => {
+
+    const user_id = req.user.id;
 
     const { name, amount_owed } = req.body;
 
+    if (!name || !Number.isFinite(Number(amount_owed))) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Customer name and amount owed are required"
+        });
+
+    }
 
     const stmt = db.prepare(`
         INSERT INTO customers
-        (name, amount_owed)
-        VALUES (?, ?)
+        (
+            user_id,
+            name,
+            amount_owed,
+            amount_paid
+        )
+        VALUES (?, ?, ?, 0)
     `);
 
-
     const result = stmt.run(
+        user_id,
         name,
-        amount_owed
+        Number(amount_owed)
     );
-
 
     res.status(201).json({
         success: true,
         id: result.lastInsertRowid
     });
-
 };
 
 
-// Get customers
+// ===============================
+// Get Customers
+// ===============================
+
 const getCustomers = (req, res) => {
+
+    const user_id = req.user.id;
 
     const customers = db.prepare(`
         SELECT *
         FROM customers
+        WHERE user_id = ?
         ORDER BY id DESC
-    `).all();
-
+    `).all(user_id);
 
     res.json(customers);
-
 };
 
+
+// ===============================
+// Receive Payment
+// ===============================
 
 const receivePayment = (req, res) => {
 
     const user_id = req.user.id;
+
     const { id } = req.params;
+
     const { amount } = req.body;
 
     const payment = Number(amount);
 
+
     // Validate payment
+
     if (!Number.isFinite(payment) || payment <= 0) {
+
         return res.status(400).json({
             success: false,
             message: "Please enter a valid payment amount"
         });
+
     }
 
+
     // Find customer belonging to this user
+
     const customer = db.prepare(`
         SELECT *
         FROM customers
@@ -67,12 +98,16 @@ const receivePayment = (req, res) => {
         AND user_id = ?
     `).get(id, user_id);
 
+
     if (!customer) {
+
         return res.status(404).json({
             success: false,
             message: "Customer not found"
         });
+
     }
+
 
     const currentOwed =
         Number(customer.amount_owed || 0);
@@ -80,14 +115,19 @@ const receivePayment = (req, res) => {
     const currentPaid =
         Number(customer.amount_paid || 0);
 
+
     // Prevent overpayment
+
     if (payment > currentOwed) {
+
         return res.status(400).json({
             success: false,
             message:
                 `Payment cannot be greater than the amount owed (KSh ${currentOwed.toLocaleString()})`
         });
+
     }
+
 
     const newPaid =
         currentPaid + payment;
@@ -95,7 +135,9 @@ const receivePayment = (req, res) => {
     const newOwed =
         currentOwed - payment;
 
+
     // Update customer
+
     db.prepare(`
         UPDATE customers
         SET
@@ -110,7 +152,9 @@ const receivePayment = (req, res) => {
         user_id
     );
 
+
     // Save payment history
+
     db.prepare(`
         INSERT INTO customer_payments
         (
@@ -125,20 +169,27 @@ const receivePayment = (req, res) => {
         payment
     );
 
+
     res.json({
         success: true,
         message: "Payment received successfully",
         amount_paid: newPaid,
         amount_owed: newOwed
     });
+
 };
+
+
 // ===============================
 // Get Customer Payment History
 // ===============================
+
 const getPaymentHistory = (req, res) => {
 
     const user_id = req.user.id;
+
     const { id } = req.params;
+
 
     const customer = db.prepare(`
         SELECT id
@@ -147,12 +198,16 @@ const getPaymentHistory = (req, res) => {
         AND user_id = ?
     `).get(id, user_id);
 
+
     if (!customer) {
+
         return res.status(404).json({
             success: false,
             message: "Customer not found"
         });
+
     }
+
 
     const payments = db.prepare(`
         SELECT
@@ -165,11 +220,15 @@ const getPaymentHistory = (req, res) => {
         ORDER BY id DESC
     `).all(id, user_id);
 
+
     res.json({
         success: true,
         payments
     });
+
 };
+
+
 module.exports = {
     createCustomer,
     getCustomers,
