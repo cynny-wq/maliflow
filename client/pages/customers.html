@@ -160,7 +160,40 @@
         </a>
 
     </nav>
+<!-- Payment History Modal -->
 
+<div id="paymentHistoryModal" class="payment-history-modal">
+
+    <div class="payment-history-content">
+
+        <div class="payment-history-header">
+
+            <div>
+                <h2>Payment History</h2>
+                <p id="paymentHistoryCustomer"></p>
+            </div>
+
+            <button
+                type="button"
+                class="close-history"
+                onclick="closePaymentHistory()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div id="paymentHistoryList">
+
+            <p class="empty">
+                Loading payment history...
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
 
     <script src="../js/customers.js"></script>
 

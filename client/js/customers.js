@@ -5,22 +5,6 @@
 const customerForm =
     document.getElementById("customerForm");
 
-const token =
-    localStorage.getItem("token");
-
-
-// ===============================
-// Check Login
-// ===============================
-
-if (!token) {
-
-    alert("Please login first.");
-
-    window.location.href = "login.html";
-
-}
-
 
 // ===============================
 // Load Customers
@@ -31,44 +15,36 @@ async function loadCustomers() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/customers",
-            {
-                headers: {
-                    "Authorization": token
-                }
-            }
+            "http://localhost:5000/api/customers"
         );
 
-        const data = await response.json();
-
-        console.log("Customers response:", data);
+        const customers =
+            await response.json();
 
         if (!response.ok) {
 
             console.error(
-                "Customer API error:",
-                data
+                "Customer error:",
+                customers
             );
 
             alert(
-                data.message ||
+                customers.message ||
                 "Unable to load customers."
             );
 
             return;
+
         }
 
-        displayCustomers(data);
+        displayCustomers(customers);
 
     } catch (error) {
 
-        console.error(
-            "Customer loading error:",
-            error
-        );
+        console.error(error);
 
         alert(
-            "Unable to connect to the server."
+            "Unable to connect to server."
         );
 
     }
@@ -90,15 +66,15 @@ customerForm.addEventListener(
         const customer = {
 
             name:
-                document.getElementById(
-                    "customerName"
-                ).value,
+                document
+                    .getElementById("customerName")
+                    .value,
 
             amount_owed:
                 Number(
-                    document.getElementById(
-                        "amountOwed"
-                    ).value
+                    document
+                        .getElementById("amountOwed")
+                        .value
                 )
 
         };
@@ -111,13 +87,10 @@ customerForm.addEventListener(
                 {
                     method: "POST",
 
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-
-                        "Authorization":
-                            token
-                    },
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": localStorage.getItem("token")
+                },
 
                     body:
                         JSON.stringify(customer)
@@ -129,27 +102,22 @@ customerForm.addEventListener(
                 await response.json();
 
 
-            if (!response.ok) {
-
-                alert(
-                    data.message ||
-                    "Failed to add customer."
-                );
-
-                return;
-
-            }
-
-
             if (data.success) {
 
                 alert(
-                    "Customer added successfully!"
+                    "Customer added successfully ✅"
                 );
 
                 customerForm.reset();
 
                 loadCustomers();
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Failed to add customer."
+                );
 
             }
 
@@ -158,7 +126,7 @@ customerForm.addEventListener(
             console.error(error);
 
             alert(
-                "Unable to connect to the server."
+                "Unable to connect to server."
             );
 
         }
@@ -185,7 +153,9 @@ function displayCustomers(customers) {
     if (customers.length === 0) {
 
         customerList.innerHTML = `
-            <p>No customers yet.</p>
+            <p class="empty">
+                No customers yet
+            </p>
         `;
 
         return;
@@ -203,33 +173,56 @@ function displayCustomers(customers) {
             "customer-item";
 
 
+        const amountOwed =
+            Number(
+                customer.amount_owed || 0
+            );
+
+
+        const amountPaid =
+            Number(
+                customer.amount_paid || 0
+            );
+
+
         item.innerHTML = `
 
-            <strong>
-                ${customer.name}
-            </strong>
+            <div class="customer-info">
 
-            <p>
-                Remaining:
-                KSh ${Number(
-                    customer.amount_owed || 0
-                ).toLocaleString()}
-            </p>
+                <strong>
+                    ${customer.name}
+                </strong>
 
-            <p>
-                Paid:
-                KSh ${Number(
-                    customer.amount_paid || 0
-                ).toLocaleString()}
-            </p>
+                <p>
+                    Owed:
+                    KSh ${amountOwed.toLocaleString()}
+                </p>
 
-            <button
-                class="receive-payment"
-                onclick="receivePayment(${customer.id})">
+                <p>
+                    Paid:
+                    KSh ${amountPaid.toLocaleString()}
+                </p>
 
-                Receive Payment
+            </div>
 
-            </button>
+<div class="customer-actions">
+
+    <button
+        class="receive-payment"
+        onclick="receivePayment(${customer.id})"
+    >
+        Receive Payment
+    </button>
+
+    <button
+        class="history-btn"
+        onclick="viewPaymentHistory(${customer.id}, '${customer.name.replace(/'/g, "\\'")}')"
+    >
+        Payment History
+    </button>
+
+</div>
+
 
         `;
 
@@ -247,16 +240,25 @@ function displayCustomers(customers) {
 
 async function receivePayment(id) {
 
-    const amount =
-        prompt(
-            "Enter payment amount:"
-        );
+    const amount = prompt("Enter payment amount:");
 
-
-    if (!amount) {
+    if (amount === null || amount.trim() === "") {
         return;
     }
 
+    const payment = Number(amount);
+
+    if (!Number.isFinite(payment) || payment <= 0) {
+        alert("Please enter a valid payment amount.");
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Please login first.");
+        return;
+    }
 
     try {
 
@@ -266,56 +268,161 @@ async function receivePayment(id) {
                 method: "PUT",
 
                 headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    "Authorization":
-                        token
+                    "Content-Type": "application/json",
+                    "Authorization": token
                 },
 
                 body: JSON.stringify({
-                    amount: Number(amount)
+                    amount: payment
                 })
             }
         );
 
+        const data = await response.json();
 
-        const data =
-            await response.json();
+        if (data.success) {
 
+            alert("Payment received successfully ✅");
 
-        if (!response.ok) {
+            loadCustomers();
+
+        } else {
 
             alert(
                 data.message ||
-                "Payment failed."
+                "Failed to receive payment."
             );
 
-            return;
-
         }
-
-
-        alert(
-            "Payment received successfully!"
-        );
-
-
-        loadCustomers();
-
 
     } catch (error) {
 
         console.error(error);
 
-        alert(
-            "Unable to connect to the server."
-        );
+        alert("Unable to connect to server.");
 
     }
-
 }
+// ===============================
+// View Payment History
+// ===============================
 
+async function viewPaymentHistory(id, customerName) {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Please login first.");
+        return;
+    }
+
+    const modal =
+        document.getElementById("paymentHistoryModal");
+
+    const customerTitle =
+        document.getElementById("paymentHistoryCustomer");
+
+    const historyList =
+        document.getElementById("paymentHistoryList");
+
+    customerTitle.textContent = customerName;
+
+    historyList.innerHTML = `
+        <p class="payment-history-empty">
+            Loading payment history...
+        </p>
+    `;
+
+    modal.style.display = "flex";
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:5000/api/customers/${id}/payments`,
+            {
+                headers: {
+                    "Authorization": token
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            historyList.innerHTML = `
+                <p class="payment-history-empty">
+                    ${data.message || "Unable to load payment history."}
+                </p>
+            `;
+
+            return;
+        }
+
+        if (data.payments.length === 0) {
+
+            historyList.innerHTML = `
+                <p class="payment-history-empty">
+                    No payments recorded yet.
+                </p>
+            `;
+
+            return;
+        }
+
+        historyList.innerHTML = "";
+
+        data.payments.forEach(payment => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "payment-history-item";
+
+            item.innerHTML = `
+
+                <div>
+
+                    <div class="payment-history-amount">
+                        KSh ${Number(payment.amount).toLocaleString()}
+                    </div>
+
+                    <div class="payment-history-date">
+                        ${payment.created_at}
+                    </div>
+
+                </div>
+
+            `;
+
+            historyList.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        historyList.innerHTML = `
+            <p class="payment-history-empty">
+                Unable to connect to server.
+            </p>
+        `;
+
+    }
+}
+// ===============================
+// Close Payment History
+// ===============================
+
+function closePaymentHistory() {
+
+    const modal =
+        document.getElementById("paymentHistoryModal");
+
+    modal.style.display = "none";
+}
 
 // ===============================
 // Start

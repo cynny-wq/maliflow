@@ -39,6 +39,15 @@ CREATE TABLE IF NOT EXISTS customers (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
+CREATE TABLE IF NOT EXISTS customer_payments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    customer_id INTEGER,
+    amount REAL NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(customer_id) REFERENCES customers(id)
+);
 `);
 
 console.log("Database tables ready ✅");

@@ -7,7 +7,8 @@ const auth = require("../middleware/auth");
 const {
     createCustomer,
     getCustomers,
-    receivePayment
+    receivePayment,
+    getPaymentHistory
 } = require("../controllers/customerController");
 // Get customers
 router.get("/", getCustomers);
@@ -17,4 +18,6 @@ router.get("/", getCustomers);
 router.post("/", createCustomer);
 
 router.put("/:id/payment", auth, receivePayment);
+// Get customer payment history
+router.get("/:id/payments", auth, getPaymentHistory);
 module.exports = router;
