@@ -234,3 +234,123 @@
     transform:scale(.97);
 
 }
+/* ===============================
+   Edit Transaction Modal
+   =============================== */
+
+.edit-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.edit-modal.show {
+    display: flex;
+}
+
+.edit-modal-content {
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+}
+
+.edit-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.edit-modal-header h2 {
+    margin: 0;
+}
+
+.close-edit {
+    border: none;
+    background: transparent;
+    font-size: 30px;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.edit-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+}
+
+.edit-form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.edit-form-group input,
+.edit-form-group textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.edit-form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.edit-type-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-type-btn {
+    flex: 1;
+    border: none;
+    padding: 13px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    background: #e2e8f0;
+}
+
+.edit-type-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.edit-modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.cancel-edit-btn,
+.save-edit-btn {
+    flex: 1;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-edit-btn {
+    background: #e2e8f0;
+}
+
+.save-edit-btn {
+    background: var(--primary);
+    color: white;
+}

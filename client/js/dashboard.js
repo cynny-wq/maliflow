@@ -330,84 +330,210 @@ async function deleteTransaction(id) {
 // Edit Transaction
 // ===============================
 
+let editingTransactionId = null;
+let editTransactionType = "income";
+
+function setEditType(type) {
+
+    editTransactionType = type;
+
+    const incomeBtn =
+        document.getElementById("editIncomeBtn");
+
+    const expenseBtn =
+        document.getElementById("editExpenseBtn");
+
+    if (type === "income") {
+
+        incomeBtn.classList.add("active");
+        expenseBtn.classList.remove("active");
+
+    } else {
+
+        expenseBtn.classList.add("active");
+        incomeBtn.classList.remove("active");
+
+    }
+}
+
+
+// Open edit modal
+
 async function editTransaction(id) {
-
-    const amount = prompt("Enter new amount:");
-
-    if (amount === null) {
-        return;
-    }
-
-    const category = prompt("Enter new category:");
-
-    if (category === null) {
-        return;
-    }
-
-    const name = prompt("Enter name:");
-
-    if (name === null) {
-        return;
-    }
-
-    const notes = prompt("Enter notes:");
-
-    if (notes === null) {
-        return;
-    }
-
-    const token = localStorage.getItem("token");
 
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/transactions/${id}`,
+            "http://localhost:5000/api/transactions",
             {
-                method: "PUT",
-
                 headers: {
-                    "Content-Type": "application/json",
                     "Authorization": token
-                },
-
-                body: JSON.stringify({
-
-    type: prompt(
-        "Type income for Money In or expense for Money Out:",
-        "income"
-    ),
-
-    amount: Number(amount),
-
-    category: category,
-
-    name: name,
-
-    notes: notes
-
-})
+                }
             }
         );
 
-        const data = await response.json();
+        const transactions = await response.json();
 
-        if (data.success) {
+        if (!response.ok) {
 
-            alert("Transaction updated ✅");
+            alert(
+                transactions.message ||
+                "Unable to load transactions."
+            );
 
-            loadDashboard();
-
-        } else {
-
-            alert(data.message || "Failed to update transaction.");
+            return;
 
         }
+
+        const transaction =
+            transactions.find(
+                item => Number(item.id) === Number(id)
+            );
+
+        if (!transaction) {
+
+            alert("Transaction not found.");
+
+            return;
+
+        }
+
+        editingTransactionId = id;
+
+        editTransactionType =
+            transaction.type === "expense"
+            ? "expense"
+            : "income";
+
+
+        document.getElementById("editAmount").value =
+            transaction.amount || "";
+
+        document.getElementById("editCategory").value =
+            transaction.category || "";
+
+        document.getElementById("editName").value =
+            transaction.name || "";
+
+        document.getElementById("editNotes").value =
+            transaction.notes || "";
+
+
+        setEditType(editTransactionType);
+
+
+        document
+            .getElementById("editModal")
+            .classList.add("show");
 
     } catch (error) {
 
         console.error(error);
 
-        alert("Unable to update transaction.");
+        alert("Unable to open transaction.");
 
     }
+
 }
+
+
+// Close edit modal
+
+function closeEditModal() {
+
+    document
+        .getElementById("editModal")
+        .classList.remove("show");
+
+    editingTransactionId = null;
+
+}
+
+
+// Save edited transaction
+
+document
+    .getElementById("editForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!editingTransactionId) {
+
+            return;
+
+        }
+
+
+        const updatedTransaction = {
+
+            type: editTransactionType,
+
+            amount: Number(
+                document.getElementById("editAmount").value
+            ),
+
+            category:
+                document.getElementById("editCategory").value,
+
+            name:
+                document.getElementById("editName").value,
+
+            notes:
+                document.getElementById("editNotes").value
+
+        };
+
+
+        try {
+
+            const response = await fetch(
+                `http://localhost:5000/api/transactions/${editingTransactionId}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    },
+
+                    body:
+                        JSON.stringify(updatedTransaction)
+                }
+            );
+
+
+            const data =
+                await response.json();
+
+
+            if (data.success) {
+
+                closeEditModal();
+
+                alert(
+                    "Transaction updated successfully ✅"
+                );
+
+                loadDashboard();
+
+            } else {
+
+                alert(
+                    data.message ||
+                    "Failed to update transaction."
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to update transaction."
+            );
+
+        }
+
+    });

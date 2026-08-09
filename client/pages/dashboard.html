@@ -156,7 +156,135 @@
 
 </main>
 
+<!-- Edit Transaction Modal -->
 
+<div id="editModal" class="edit-modal">
+
+    <div class="edit-modal-content">
+
+        <div class="edit-modal-header">
+
+            <h2>Edit Transaction</h2>
+
+            <button
+                type="button"
+                class="close-edit"
+                onclick="closeEditModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="editForm">
+
+            <div class="edit-form-group">
+
+                <label>Transaction Type</label>
+
+                <div class="edit-type-buttons">
+
+                    <button
+                        type="button"
+                        id="editIncomeBtn"
+                        class="edit-type-btn active"
+                        onclick="setEditType('income')">
+                        + Money In
+                    </button>
+
+                    <button
+                        type="button"
+                        id="editExpenseBtn"
+                        class="edit-type-btn"
+                        onclick="setEditType('expense')">
+                        - Money Out
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="edit-form-group">
+
+                <label for="editAmount">
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="editAmount"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+            <div class="edit-form-group">
+
+                <label for="editCategory">
+                    Category
+                </label>
+
+                <input
+                    type="text"
+                    id="editCategory"
+                    required
+                >
+
+            </div>
+
+
+            <div class="edit-form-group">
+
+                <label for="editName">
+                    Name
+                </label>
+
+                <input
+                    type="text"
+                    id="editName"
+                >
+
+            </div>
+
+
+            <div class="edit-form-group">
+
+                <label for="editNotes">
+                    Notes
+                </label>
+
+                <textarea
+                    id="editNotes">
+                </textarea>
+
+            </div>
+
+
+            <div class="edit-modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-edit-btn"
+                    onclick="closeEditModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-edit-btn">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 <!-- Bottom Navigation -->
 
 <nav class="bottom-nav">
