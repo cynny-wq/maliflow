@@ -206,54 +206,46 @@ async function loadDashboard() {
 
         transactions.forEach(transaction => {
 
-            const item =
-                document.createElement("div");
+    const item = document.createElement("div");
 
-            item.className =
-                "transaction-item";
+    item.className = "transaction-item";
 
+    item.innerHTML = `
+        <div class="transaction-info">
 
-            const sign =
-                transaction.type === "income"
-                    ? "+"
-                    : "-";
+            <strong>${transaction.category}</strong>
 
+            <p>${transaction.name || "No name"}</p>
 
-            const color =
-                transaction.type === "income"
-                    ? "positive"
-                    : "negative";
+            <span class="${transaction.type === "income" ? "positive" : "negative"}">
+                ${transaction.type === "income" ? "+" : "-"}
+                KSh ${Number(transaction.amount).toLocaleString()}
+            </span>
 
+        </div>
 
-            item.innerHTML = `
+        <div class="transaction-actions">
 
-                <div>
+            <button
+                class="edit-btn"
+                onclick="editTransaction(${transaction.id})">
+                ✏️ Edit
+            </button>
 
-                    <strong>
-                        ${transaction.category || "Transaction"}
-                    </strong>
+            <button
+                class="delete-btn"
+                onclick="deleteTransaction(${transaction.id})">
+                🗑️ Delete
+            </button>
 
-                    <p>
-                        ${transaction.name || "No name"}
-                    </p>
+        </div>
+    `;
 
-                </div>
+    transactionList.appendChild(item);
 
-                <span class="${color}">
+});
 
-                    ${sign}
-                    KSh ${Number(
-                        transaction.amount || 0
-                    ).toLocaleString()}
-
-                </span>
-
-            `;
-
-
-            transactionList.appendChild(item);
-
-        });
+        
 
     } catch (error) {
 
@@ -280,3 +272,142 @@ loadBusiness();
 loadCustomerDebt();
 
 loadDashboard();
+
+// ===============================
+// Delete Transaction
+// ===============================
+
+async function deleteTransaction(id) {
+
+    const confirmDelete = confirm(
+        "Are you sure you want to delete this transaction?"
+    );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:5000/api/transactions/${id}`,
+            {
+                method: "DELETE",
+
+                headers: {
+                    "Authorization": token
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            alert("Transaction deleted ✅");
+
+            loadDashboard();
+
+        } else {
+
+            alert(data.message || "Failed to delete transaction.");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to delete transaction.");
+
+    }
+}
+
+
+// ===============================
+// Edit Transaction
+// ===============================
+
+async function editTransaction(id) {
+
+    const amount = prompt("Enter new amount:");
+
+    if (amount === null) {
+        return;
+    }
+
+    const category = prompt("Enter new category:");
+
+    if (category === null) {
+        return;
+    }
+
+    const name = prompt("Enter name:");
+
+    if (name === null) {
+        return;
+    }
+
+    const notes = prompt("Enter notes:");
+
+    if (notes === null) {
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:5000/api/transactions/${id}`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token
+                },
+
+                body: JSON.stringify({
+
+    type: prompt(
+        "Type income for Money In or expense for Money Out:",
+        "income"
+    ),
+
+    amount: Number(amount),
+
+    category: category,
+
+    name: name,
+
+    notes: notes
+
+})
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            alert("Transaction updated ✅");
+
+            loadDashboard();
+
+        } else {
+
+            alert(data.message || "Failed to update transaction.");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to update transaction.");
+
+    }
+}

@@ -1,55 +1,40 @@
 const moneyInBtn = document.getElementById("moneyIn");
 const moneyOutBtn = document.getElementById("moneyOut");
+const cashForm = document.getElementById("cashForm");
 
 let transactionType = "income";
 
-
-// Toggle transaction type
-
-moneyInBtn.addEventListener("click", () => {
+// Money In
+moneyInBtn.addEventListener("click", function () {
 
     transactionType = "income";
 
     moneyInBtn.classList.add("active");
-
     moneyOutBtn.classList.remove("active");
 
 });
 
-
-moneyOutBtn.addEventListener("click", () => {
+// Money Out
+moneyOutBtn.addEventListener("click", function () {
 
     transactionType = "expense";
 
     moneyOutBtn.classList.add("active");
-
     moneyInBtn.classList.remove("active");
 
 });
 
-
-
-// Handle form submission
-
-const cashForm = document.getElementById("cashForm");
-
-
-cashForm.addEventListener("submit", async function(event){
+// Save transaction
+cashForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
-
     const token = localStorage.getItem("token");
 
-
-    if(!token){
-
+    if (!token) {
         alert("Please login first.");
-
         return;
-
     }
-
 
     const transaction = {
 
@@ -60,81 +45,63 @@ cashForm.addEventListener("submit", async function(event){
         ),
 
         category:
-        document.getElementById("category").value,
-
+            document.getElementById("category").value,
 
         name:
-        document.getElementById("name").value,
-
+            document.getElementById("name").value,
 
         notes:
-        document.getElementById("notes").value
+            document.getElementById("notes").value
 
     };
 
-
+    console.log("Sending transaction:", transaction);
 
     try {
-
 
         const response = await fetch(
             "http://localhost:5000/api/transactions",
             {
+                method: "POST",
 
-                method:"POST",
-
-                headers:{
-
-                    "Content-Type":"application/json",
-
+                headers: {
+                    "Content-Type": "application/json",
                     "Authorization": token
-
                 },
 
-
                 body: JSON.stringify(transaction)
-
             }
         );
 
-
-
         const data = await response.json();
 
+        console.log("Server response:", data);
 
-
-        if(data.success){
-
+        if (data.success) {
 
             alert(
-                transaction.type === "income"
-                ? "Money In recorded ✅"
-                : "Money Out recorded ✅"
+                transactionType === "income"
+                    ? "Money In recorded ✅"
+                    : "Money Out recorded ✅"
             );
-
 
             cashForm.reset();
 
-
         } else {
 
-
-            alert(data.message || "Failed to save transaction.");
-
+            alert(
+                data.message ||
+                "Failed to save transaction."
+            );
 
         }
 
-
-
-    } catch(error){
-
+    } catch (error) {
 
         console.error(error);
 
         alert("Unable to connect to server.");
 
-
     }
-
 
 });
