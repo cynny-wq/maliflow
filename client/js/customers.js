@@ -15,7 +15,7 @@ async function loadCustomers() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/customers"
+            "/api/customers"
         );
 
         const customers =
@@ -83,7 +83,7 @@ customerForm.addEventListener(
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/customers",
+                "/api/customers",
                 {
                     method: "POST",
 
@@ -263,7 +263,7 @@ async function receivePayment(id) {
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/customers/${id}/payment`,
+            `/api/customers/${id}/payment`,
             {
                 method: "PUT",
 
@@ -338,7 +338,7 @@ async function viewPaymentHistory(id, customerName) {
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/customers/${id}/payments`,
+            `/api/customers/${id}/payments`,
             {
                 headers: {
                     "Authorization": token

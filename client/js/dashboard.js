@@ -19,7 +19,7 @@ async function loadBusiness() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/businesses",
+            "/api/businesses",
             {
                 headers: {
                     "Authorization": token
@@ -66,7 +66,7 @@ async function loadCustomerDebt() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/customers",
+            "/api/customers",
             {
                 headers: {
                     "Authorization": token
@@ -114,7 +114,7 @@ async function loadDashboard() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/transactions",
+            "/api/transactions",
             {
                 headers: {
                     "Authorization": token
@@ -292,7 +292,7 @@ async function deleteTransaction(id) {
     try {
 
         const response = await fetch(
-            `http://localhost:5000/api/transactions/${id}`,
+            `/api/transactions/${id}`,
             {
                 method: "DELETE",
 
@@ -364,7 +364,7 @@ async function editTransaction(id) {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/transactions",
+            "/api/transactions",
             {
                 headers: {
                     "Authorization": token
@@ -488,7 +488,7 @@ document
         try {
 
             const response = await fetch(
-                `http://localhost:5000/api/transactions/${editingTransactionId}`,
+                `/api/transactions/${editingTransactionId}`,
                 {
                     method: "PUT",
 

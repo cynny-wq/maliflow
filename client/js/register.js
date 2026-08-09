@@ -11,7 +11,7 @@ registerForm.addEventListener("submit", async function (event) {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/auth/register",
+            "/api/auth/register",
             {
                 method: "POST",
 

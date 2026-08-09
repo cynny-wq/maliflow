@@ -8,7 +8,7 @@ async function loadProfile(){
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/businesses"
+            "/api/businesses"
         );
 
         const business = await response.json();
@@ -75,7 +75,7 @@ profileForm.addEventListener("submit", async function(event){
 
 
         const response = await fetch(
-            "http://localhost:5000/api/businesses",
+            "/api/businesses",
             {
 
                 method:"POST",
